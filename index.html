@@ -2,22 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Калькулятор стоимости</title>
+    <title>Калькулятор стоимости товара</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        input, select, button { padding: 8px; margin: 5px 0; width: 200px; }
+        input, select, textarea, button { padding: 8px; margin: 5px 0; width: 300px; }
         .result { margin-top: 20px; font-weight: bold; }
+        .history { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
+        .history-item { margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <h1>Калькулятор стоимости товара</h1>
-
+    
     <label>Стоимость товара (USD):</label><br>
     <input type="number" id="productCost" placeholder="Введите стоимость"><br>
-
+    
     <label>Вес (кг):</label><br>
     <input type="number" id="weight" placeholder="Введите вес"><br>
-
+    
     <label>Тип доставки:</label><br>
     <select id="deliveryType">
         <option value="air">Воздушная (Air)</option>
@@ -25,29 +27,57 @@
         <option value="ground">Наземная (Ground)</option>
     </select><br>
 
+    <label>Комментарий:</label><br>
+    <textarea id="comment" placeholder="Ваш комментарий" rows="2"></textarea><br>
+    
     <button onclick="calculate()">Рассчитать</button>
-
+    
     <div class="result" id="result"></div>
 
+    <div class="history" id="history">
+        <h3>История расчетов:</h3>
+    </div>
+
     <script>
+        const historyDiv = document.getElementById('history');
+
         function calculate() {
             const productCost = parseFloat(document.getElementById('productCost').value) || 0;
             const weight = parseFloat(document.getElementById('weight').value) || 0;
             const deliveryType = document.getElementById('deliveryType').value;
+            const comment = document.getElementById('comment').value || '';
 
             let deliveryRate = 0;
             switch(deliveryType) {
-                case "air": deliveryRate = 10; break;   // 10 USD за кг
-                case "sea": deliveryRate = 5; break;    // 5 USD за кг
-                case "ground": deliveryRate = 7; break; // 7 USD за кг
+                case "air": deliveryRate = 10; break;   
+                case "sea": deliveryRate = 5; break;    
+                case "ground": deliveryRate = 7; break; 
             }
-
+            
             const deliveryCost = weight * deliveryRate;
             const totalCost = productCost + deliveryCost;
+            
+            const resultText = `Стоимость доставки: $${deliveryCost.toFixed(2)} <br>
+                                Общая стоимость: $${totalCost.toFixed(2)}`;
+            document.getElementById('result').innerHTML = resultText;
 
-            document.getElementById('result').innerHTML =
-                `Стоимость доставки: $${deliveryCost.toFixed(2)} <br>` +
-                `Общая стоимость: $${totalCost.toFixed(2)}`;
+            // Добавляем запись в историю
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <b>Товар:</b> $${productCost.toFixed(2)}, 
+                <b>Вес:</b> ${weight} кг, 
+                <b>Доставка:</b> ${deliveryType}, 
+                <b>Стоимость доставки:</b> $${deliveryCost.toFixed(2)}, 
+                <b>Общая стоимость:</b> $${totalCost.toFixed(2)}<br>
+                <b>Комментарий:</b> ${comment}
+            `;
+            historyDiv.appendChild(historyItem);
+
+            // Очищаем поля
+            document.getElementById('productCost').value = '';
+            document.getElementById('weight').value = '';
+            document.getElementById('comment').value = '';
         }
     </script>
 </body>
