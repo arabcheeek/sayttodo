@@ -1,20 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"/>
-  <title>Простой сайт</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <style>
-    body{font-family:Arial, sans-serif; padding:30px;}
-    .container{max-width:700px;margin:0 auto;}
-  </style>
+    <meta charset="UTF-8">
+    <title>Калькулятор стоимости</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, select, button { padding: 8px; margin: 5px 0; width: 200px; }
+        .result { margin-top: 20px; font-weight: bold; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Привет — это мой сайт</h1>
-    <p>Добавь свои задачи, описание и контакты.</p>
-  </div>
+    <h1>Калькулятор стоимости товара</h1>
+
+    <label>Стоимость товара (USD):</label><br>
+    <input type="number" id="productCost" placeholder="Введите стоимость"><br>
+
+    <label>Вес (кг):</label><br>
+    <input type="number" id="weight" placeholder="Введите вес"><br>
+
+    <label>Тип доставки:</label><br>
+    <select id="deliveryType">
+        <option value="air">Воздушная (Air)</option>
+        <option value="sea">Морская (Sea)</option>
+        <option value="ground">Наземная (Ground)</option>
+    </select><br>
+
+    <button onclick="calculate()">Рассчитать</button>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculate() {
+            const productCost = parseFloat(document.getElementById('productCost').value) || 0;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const deliveryType = document.getElementById('deliveryType').value;
+
+            let deliveryRate = 0;
+            switch(deliveryType) {
+                case "air": deliveryRate = 10; break;   // 10 USD за кг
+                case "sea": deliveryRate = 5; break;    // 5 USD за кг
+                case "ground": deliveryRate = 7; break; // 7 USD за кг
+            }
+
+            const deliveryCost = weight * deliveryRate;
+            const totalCost = productCost + deliveryCost;
+
+            document.getElementById('result').innerHTML =
+                `Стоимость доставки: $${deliveryCost.toFixed(2)} <br>` +
+                `Общая стоимость: $${totalCost.toFixed(2)}`;
+        }
+    </script>
 </body>
 </html>
-
-https://arabcheeek.github.io/sayttodo/
